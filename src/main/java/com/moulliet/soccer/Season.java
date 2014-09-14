@@ -33,23 +33,6 @@ public class Season {
         return dateRpiMap;
     }
 
-    public Season statisticalCopy() {
-        statSeason = new Season(year, team);
-        statSeason.seasonStrategy = new StatisticalSeasonStrategy();
-        for (Game game : games.values()) {
-            if (!game.isPlayed()) {
-                statSeason.addGame(StatisticalGame.lookup(game));
-            } else {
-                statSeason.addGame(game);
-            }
-        }
-        return statSeason;
-    }
-
-    public Season getStatSeason() {
-        return statSeason;
-    }
-
     public void addGame(Game game) {
         games.put(game.getDate(), game);
     }

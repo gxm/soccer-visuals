@@ -92,7 +92,6 @@ public class SoccerParser {
         addDate(rootNode);
         DefaultSeasonStrategy defaultStrategy = new DefaultSeasonStrategy();
         List<Team> teams = Teams.getTeamsByRpi(year, defaultStrategy);
-        StatisticalSeasonStrategy statisticalStrategy = new StatisticalSeasonStrategy();
         ArrayNode teamsNode = rootNode.putArray("teams");
         for (int i = 0; i < teamCount; i++) {
             Team team = teams.get(i);
@@ -105,7 +104,6 @@ public class SoccerParser {
             }
             if (year == Dates.CURRENT_YEAR) {
                 teamNode.put("current", round(defaultStrategy.getRpi(team, year)));
-                teamNode.put("prediction", round(statisticalStrategy.getRpi(team, year)));
             }
         }
 

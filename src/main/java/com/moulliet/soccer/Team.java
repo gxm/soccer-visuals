@@ -93,23 +93,4 @@ public class Team {
 
     }
 
-    public Season statisticalCopy(int year) {
-        return getSeason(year).statisticalCopy();
-    }
-
-    public void statisticalRpi(int year) {
-        try {
-            Season statSeason = getSeason(year).getStatSeason();
-            statSeason.calculateRpi();
-            statRpis.add(statSeason.getRpi());
-
-        } catch (Exception e) {
-            logger.error("what's this? " + name, e);
-        }
-    }
-
-    public float getStatSeasonsRpi() {
-        return Season.average(statRpis);
-    }
-
 }

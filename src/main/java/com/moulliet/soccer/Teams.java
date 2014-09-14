@@ -1,6 +1,5 @@
 package com.moulliet.soccer;
 
-import com.moulliet.common.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,23 +26,6 @@ public class Teams {
 
         forecastRpi();
 
-        statisticalRpi();
-    }
-
-    private static void statisticalRpi() {
-        logger.info("starting statistical");
-        int year = Dates.CURRENT_YEAR;
-        List<Team> teamsByRpi = getTeamsByRpi(year);
-        int iterations = Config.getInstance().get("stat.iterations", 500);
-        for (int i = 0; i < iterations; i++) {
-            for (Team team : teamsByRpi) {
-                team.statisticalCopy(year);
-            }
-            for (Team team : teamsByRpi) {
-                team.statisticalRpi(year);
-            }
-        }
-        logger.info("completed statistical");
     }
 
     private static void forecastRpi() {
