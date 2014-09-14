@@ -1,4 +1,8 @@
 #!/bin/sh
+# This script expects host names setup in .ssh/config :
+# soccer-service hosts the web services running in Java
+# soccer-web hosts the static web files
+#
 if [ $# != 1 ]
 then
 	echo "Usage: bash $0 {deploy|restart|build|download|all}"
