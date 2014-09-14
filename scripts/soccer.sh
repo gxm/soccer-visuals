@@ -65,7 +65,7 @@ download ()
         -Dbase.dir=${ROOT_DIR}
 	"
 
-	java ${OPTIONS} com.moulliet.soccer.ncsoccer.SoccerDownload
+	java ${OPTIONS} com.moulliet.soccer.soccer.SoccerDownload
 
 }
 

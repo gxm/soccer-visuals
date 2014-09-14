@@ -5,7 +5,7 @@
 #
 if [ $# != 1 ]
 then
-	echo "Usage: bash $0 {deploy|restart|build|download|all}"
+	echo "Usage: bash $0 {restart|build|web|download|all}" >&2
 	exit
 fi
 
@@ -59,9 +59,6 @@ download()
 }
 
 case $1 in
-	deploy)
-		deploy
-		;;
 	restart)
 	    deploy
 	    restart
@@ -87,5 +84,5 @@ case $1 in
 	    ;;
 
 	*)
-		echo "Usage: bash $0 {deploy|restart|build|download|all}" >&2
+		echo "Usage: bash $0 {restart|build|web|download|all}" >&2
 esac
