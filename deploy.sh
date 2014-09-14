@@ -18,7 +18,7 @@ build()
         echo "Build Failed, exiting"
         exit
     fi
-    rsync -avr target/soccer-0.1-SNAPSHOT-jar-with-dependencies.jar linode:${PROJECT}
+    rsync -avr target/soccer-0.1-SNAPSHOT-jar-with-dependencies.jar soccer-service:${PROJECT}
 }
 
 deploy()
@@ -30,28 +30,28 @@ deploy()
 deployService()
 {
     echo "deploying files"
-    #rsync -avr data/* linode:${PROJECT}/data
-    rsync -avr config/prod/ linode:${PROJECT}/config/
-    rsync -avr scripts/*.sh linode:${SCRIPTS}
-    ssh linode chmod u+x ${SCRIPTS}*.sh
+    #rsync -avr data/* soccer-service:${PROJECT}/data
+    rsync -avr config/prod/ soccer-service:${PROJECT}/config/
+    rsync -avr scripts/*.sh soccer-service:${SCRIPTS}
+    ssh soccer-service chmod u+x ${SCRIPTS}*.sh
 }
 
 deployWeb()
 {
     echo "deploying web files"
-    rsync -avr web/ dreamhost:${PROJECT}.moulliet.com/
+    rsync -avr web/ soccer-web:${PROJECT}.moulliet.com/
 }
 
 restart()
 {
     echo "restarting service"
-    ssh linode bash ${SCRIPTS}${PROJECT}.sh restart
+    ssh soccer-service bash ${SCRIPTS}${PROJECT}.sh restart
 }
 
 download()
 {
     echo "downloading and restarting service"
-    ssh linode bash ${SCRIPTS}${PROJECT}.sh download
+    ssh soccer-service bash ${SCRIPTS}${PROJECT}.sh download
 }
 
 case $1 in
@@ -79,6 +79,7 @@ case $1 in
 	download)
 	    deploy
 	    download
+	    restart
 	    ;;
 
 	*)
