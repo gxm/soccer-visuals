@@ -22,4 +22,5 @@ modify download to work with json links
 Consolidate js in web/parallel with web/js-lib
 Upgrade libs
 Look at using bower
+Make teamNames.js a Rest call
 
