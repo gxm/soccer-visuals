@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>Soccer RPI - Parallel Coordinates</title>
+
+    <script type="text/javascript" src="./parallel/d3.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="./parallel/d3.csv.js"></script>
+    <script type="text/javascript" src="./parallel/d3.layout.js"></script>
+    <script type="text/javascript"
+            src="parallel/parallel-coordinates.js"></script>
+
+    <script type="text/javascript" src="./parallel/jquery.js"></script>
+    <script type="text/javascript" src="./parallel/underscore.js"></script>
+    <script type="text/javascript" src="./parallel/backbone.js"></script>
+
+    <script src="./parallel/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="./parallel/filter.js"></script>
+
+
+    <!-- SlickGrid -->
+    <link rel="stylesheet" href="./js-lib/slick.grid.css" type="text/css"
+          media="screen" charset="utf-8">
+    <script src="./parallel/jquery.event.drag-2.0.min.js"></script>
+    <script src="./js-lib/slick.core.js"></script>
+    <script src="./js-lib/slick.grid.js"></script>
+    <script src="./js-lib/slick.dataview.js"></script>
+    <script src="./js-lib/slick.pager.js"></script>
+    <script src="./parallel/grid.js"></script>
+
+    <script src="./parallel/options.js"></script>
+    <link rel="stylesheet" href="./parallel/style.css" type="text/css"
+          charset="utf-8">
+
+    <style type="text/css" rel="stylesheet">.slickgrid_56857 .slick-header-column {
+        left: 1000px;
+        }
+
+        .slickgrid_56857 .slick-top-panel {
+        height: 25px;
+        }
+
+        .slickgrid_56857 .slick-headerrow-columns {
+        height: 25px;
+        }
+
+        .slickgrid_56857 .slick-cell {
+        height: 22px;
+        }
+
+        .slickgrid_56857 .slick-row {
+        width: 1620px;
+        height: 25px;
+        }
+
+        .slickgrid_56857 .lr {
+        float: none;
+        position: absolute;
+        }
+
+        .slickgrid_56857 .l0 {
+        left: 0px;
+        }
+
+        .slickgrid_56857 .r0 {
+        right: 1300px;
+        }
+
+        .slickgrid_56857 .l1 {
+        left: 320px;
+        }
+
+        .slickgrid_56857 .r1 {
+        right: 1120px;
+        }
+
+        .slickgrid_56857 .l2 {
+        left: 500px;
+        }
+
+        .slickgrid_56857 .r2 {
+        right: 1040px;
+        }
+
+        .slickgrid_56857 .l3 {
+        left: 580px;
+        }
+
+        .slickgrid_56857 .r3 {
+        right: 960px;
+        }
+
+        .slickgrid_56857 .l4 {
+        left: 660px;
+        }
+
+        .slickgrid_56857 .r4 {
+        right: 880px;
+        }
+
+        .slickgrid_56857 .l5 {
+        left: 740px;
+        }
+
+        .slickgrid_56857 .r5 {
+        right: 800px;
+        }
+
+        .slickgrid_56857 .l6 {
+        left: 820px;
+        }
+
+        .slickgrid_56857 .r6 {
+        right: 720px;
+        }
+
+        .slickgrid_56857 .l7 {
+        left: 900px;
+        }
+
+        .slickgrid_56857 .r7 {
+        right: 640px;
+        }
+
+        .slickgrid_56857 .l8 {
+        left: 980px;
+        }
+
+        .slickgrid_56857 .r8 {
+        right: 560px;
+        }
+
+        .slickgrid_56857 .l9 {
+        left: 1060px;
+        }
+
+        .slickgrid_56857 .r9 {
+        right: 480px;
+        }
+
+        .slickgrid_56857 .l10 {
+        left: 1140px;
+        }
+
+        .slickgrid_56857 .r10 {
+        right: 400px;
+        }
+
+        .slickgrid_56857 .l11 {
+        left: 1220px;
+        }
+
+        .slickgrid_56857 .r11 {
+        right: 320px;
+        }
+
+        .slickgrid_56857 .l12 {
+        left: 1300px;
+        }
+
+        .slickgrid_56857 .r12 {
+        right: 240px;
+        }
+
+        .slickgrid_56857 .l13 {
+        left: 1380px;
+        }
+
+        .slickgrid_56857 .r13 {
+        right: 160px;
+        }
+
+        .slickgrid_56857 .l14 {
+        left: 1460px;
+        }
+
+        .slickgrid_56857 .r14 {
+        right: 80px;
+        }
+
+        .slickgrid_56857 .l15 {
+        left: 1540px;
+        }
+
+        .slickgrid_56857 .r15 {
+        right: 0px;
+        }
+    </style>
+</head>
+
+<body class="">
+<div id="nav">
+    <h1>Soccer RPI - Parallel Coordinates</h1>
+
+    <div><a href="#" id="inverted" class="right toggle">Dark</a></div>
+    <div><a href="#" id="no_ticks" class="right toggle">Hide Ticks</a></div>
+    <div class="right topSelect">Top <select id="count">
+        <option value="25" selected>25</option>
+        <option value="40">40</option>
+        <option value="64">64</option>
+        <option value="100">100</option>
+        <option value="330">330</option>
+    </select> Teams
+    </div>
+    <div class="right topSelect"><select id="year">
+        <option value="2014" selected>2014</option>
+        <option value="2013">2013</option>
+        <option value="2012">2012</option>
+        <option value="2011">2011</option>
+        <option value="2010">2010</option>
+        <option value="2009">2009</option>
+    </select></div>
+</div>
+<div id="main">
+<div class="widgets">
+    <div id="legend"></div>
+</div>
+<div id="parallel" class="ui-resizable">
+    <div class="ui-resizable-handle ui-resizable-s"></div>
+    <svg></svg>
+</div>
+<div id="myGrid" tabindex="0" hidefocus="true" class="slickgrid_56857 ui-widget ui-resizable"
+     style="overflow: hidden; outline: 0px; position: relative;">
+    <div class="slick-header ui-state-default" style="overflow:hidden;position:relative;">
+        <div class="slick-header-columns ui-sortable" style="width:10000px; left:-1000px" unselectable="on">
+
+        </div>
+    </div>
+    <div class="slick-headerrow ui-state-default" style="overflow: hidden; position: relative; display: none;">
+        <div class="slick-headerrow-columns" style="width:10000px;"></div>
+    </div>
+    <div class="slick-top-panel-scroller ui-state-default"
+         style="overflow: hidden; position: relative; display: none;">
+        <div class="slick-top-panel" style="width:10000px">
+        </div>
+
+    </div>
+    <div class="slick-viewport" tabindex="0" hidefocus=""
+         style="width: 100%; overflow: auto; outline: 0px; position: relative; height: 235px;">
+        <div class="grid-canvas" tabindex="0" hidefocus="" style="width: 1620px; height: 28750px;">
+            <div class="ui-widget-content slick-row  even" row="58" style="top:1450px">
+            </div>
+        </div>
+    </div>
+    <div class="ui-resizable-handle ui-resizable-s"></div>
+</div>
+<script type="text/javascript">
+
+    $(function () {
+
+        var hosts = ['http://74.207.248.81:8081/',
+            'http://localhost:8081/'];
+
+        var host = hosts[0];
+
+        var href = window.location.href;
+        if (href === undefined || href === '' || href.indexOf(hosts[1]) == 0)
+        {
+            host = hosts[1];
+        }
+
+        var dimensions = new Filter();
+        var highlighter = new Selector();
+
+        /**
+         * todo's
+         * * minimize vertical white space - may mean converting to percents
+         * * allow hovering to show team's name
+         * reduce number of js dependencies
+         * add ARPI for prediction & end of season
+         * turn off dragging slick columns
+         * choose better colors based on top 25 & 64
+         * show data's date
+         * turn off id in slick grid -> add rank to first column
+         * add monochrome team colors
+         *
+         */
+        var colors = {
+            //Middle Region:  Big 10, Horizon, Mid-American, Missouri Valley, Ohio Valley, and Summit conferences.
+            'Big Ten': '#67001F',
+            'Mid-American': '#67001F',
+            'Summit': '#67001F',
+            'Missouri Valley': '#67001F',
+            'Horizon': '#67001F',
+            'Ohio Valley (OVC)': '#67001F',
+            'American Athletic': '#67001F',
+
+            //Northeast Region:  America East, Atlantic 10, Big East, Colonial, Ivy, Metro Atlantic, Northeast, and Patriot conferences plus Delaware State, Howard, and NJIT.
+
+            'Big East': '#B2182B',
+            'Atlantic 10': '#B2182B',
+            'Ivy': '#B2182B',
+            'Colonial': '#B2182B',
+            'Northeast': '#B2182B',
+            'Patriot': '#B2182B',
+            'Metro Atlantic': '#B2182B',
+            'America East': '#B2182B',
+
+            //Southeast Region:  ACC, Atlantic Sun,  Big South, Southern, and SEC conferences plus South Carolina State and Francis Marion.
+            'Atlantic Coast (ACC)': '#F4A582',
+            'Southeastern (SEC)': '#F4A582',
+            'Atlantic Sun': '#F4A582',
+            'Southern': '#F4A582',
+            'Big South': '#F4A582',
+
+            //Southwest Region:  Big 12, Conference USA, Southland, Southwestern, and Sun Belt conferences plus Houston Baptist.
+            'Big 12': '#4393C3',
+            'Southland': '#4393C3',
+            'Conference USA': '#4393C3',
+            'Sun Belt': '#4393C3',
+            'Southwestern (SWAC)': '#4393C3',
+
+            //West:  Big Sky, Big West, Mountain West, Pac 10, WAC, and West Coast conferences plus Cal State Bakersfield and Utah Valley.
+            'Pacific-12': '#053061',
+            'West Coast (WCC)': '#053061',
+            'Mountain West': '#053061',
+            'Big West': '#053061',
+            'Western Athletic (WAC)': '#053061',
+            'Big Sky': '#053061',
+
+            'Non-Division I': '#000000',
+            'Division I Independents': '#000000'
+        };
+
+        var parallelSvg;
+
+        function conferenceClick(name) {
+            alert(name);
+        }
+
+
+        function loadJson() {
+
+            var year = $('#year').val();
+            var count = $('#count').val();
+            $.getJSON(host + 'rpi/' + year + '/' + count + '?callback=?', function(data){
+
+                //$('#date').text(data.date);
+
+                var teams = data.teams;
+                dimensions.set({data: teams });
+
+                var columns = _(teams[0]).keys();
+
+                var conferences = {};
+                _(teams).each(function (item) {
+                    if (!(item.conference in conferences)) {
+                        conferences[item.conference] = item.conference;
+                    }
+                });
+
+                $('#legend').empty();
+                _(conferences).each(function (conference) {
+                    $('#legend').append(
+                            "<div class='item conferences' id='" + conference + "'>" +
+                                "<div class='color' style='background: " + colors[conference] + "';></div>" +
+                                "<div class='key'>" + conference + "</div>" +
+                            "</div>");
+                });
+
+                $('.conferences').click(function (event) {
+                    //alert('clicked ' + this.id);
+                    //todo how to highlight a conference?
+                    parallelSvg.conferenceHighlight(this.id);
+                });
+
+                parallelSvg = parallel(dimensions, colors);
+
+                var slicky = new grid({
+                    model: dimensions,
+                    selector: highlighter,
+                    width: $('body').width(),
+                    columns: columns
+                });
+
+                // vertical full screen
+                var parallel_height = $(window).height() - 64 - 12 - 120 - 320;
+                if (parallel_height < 120) parallel_height = 120;  // min height
+                if (parallel_height > 340) parallel_height = 340;  // max height
+                $('#parallel').css({
+                    //height: parallel_height + 'px',
+                    width: $(window).width() + 'px'
+                });
+
+                slicky.update();
+                parallelSvg.render();
+
+            });
+        }
+
+        dimensions.bind('change:filtered', function () {
+            var data = dimensions.get('data');
+            var filtered = dimensions.get('filtered');
+            var data_size = _(data).size();
+            var filtered_size = _(filtered).size();
+
+        });
+
+        highlighter.bind('change:selected', function () {
+            var highlighted = this.get('selected');
+            parallelSvg.highlight(highlighted);
+        });
+
+        $('#parallel').resize(function () {
+            // vertical full screen
+            parallelSvg.render();
+            //$('#parallel .foreground path').css('stroke-opacity', val.toString());
+        });
+
+        $('#parallel').resizable({
+            handles: 's',
+            resize: function () {
+                return false;
+            }
+        });
+
+        $('#myGrid').resizable({
+            handles: 's'
+        });
+
+        $('#count').change(function () {
+            loadJson();
+        });
+
+        $('#year').change(function () {
+            loadJson();
+        });
+
+        function addslashes(str) {
+            return (str + '').replace(/\"/g, "\"\"")        // escape double quotes
+                    .replace(/\0/g, "\\0");        // replace nulls with 0
+        }
+
+        window.onload = function () {
+            loadJson();
+
+        };
+
+    });
+
+
+</script>
+</div>
+
+
+</body>
+</html>

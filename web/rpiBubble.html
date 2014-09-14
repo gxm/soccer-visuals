@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <meta charset="utf-8">
+    <title>RPI Bubbles</title>
+</head>
+
+<body>
+<div class="upperRight">
+    <div class="medium">
+        <select id="year">
+            <option value="2014" selected>2014</option>
+            <option value="2013">2013</option>
+            <option value="2012">2012</option>
+            <option value="2011">2011</option>
+            <option value="2010">2010</option>
+            <option value="2009">2009</option>
+        </select>
+        RPI for <select id="team"> </select><br>
+        Percentage Contributions for
+        <a href="https://sites.google.com/site/rpifordivisioniwomenssoccer/rpi-formula" target="_blank"> RPI
+            Elements</a>
+    </div>
+    <div class="small">
+        Circles are colored by conference and sized by RPI contribution.<br>
+        Total volume is normalized to 100% of all elements in the RPI<br>
+        Data last updated at <span id="date"></span>
+    </div>
+</div>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="js-lib/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="js-lib/bootstrap.min.js"></script>
+<script type="text/javascript" src="data/teamNames.js"></script>
+
+<script>
+
+    var hosts = ['http://74.207.248.81:8081/',
+        'http://localhost:8081/'];
+
+    var host = hosts[0];
+
+    var href = window.location.href;
+    if (href === undefined || href === '' || href.indexOf(hosts[1]) == 0)
+    {
+        host = hosts[1];
+    }
+    
+    var diameter = 800,
+            format = d3.format(",d"),
+            color = d3.scale.category20c();
+
+    var bubble = d3.layout.pack()
+            .sort(null)
+            .size([diameter, diameter])
+            .padding(1.5);
+
+    var svg = d3.select("body")
+            .append("svg")
+            .attr("width", diameter)
+            .attr("height", diameter)
+            .attr("class", "bubble");
+
+    function loadJson() {
+        var team = $('#team').val();
+        var year = $('#year').val();
+
+        $.getJSON(host + 'bubble/' + year + '/' + team + '?callback=?', function(data){
+            var root = {children: data.data};
+            $('#date').text(data.date);
+            var bubbleNodes = bubble.nodes(root)
+                    .filter(function (d) { return !d.children; });
+
+            svg.selectAll(".node").remove();
+
+            var node = svg.selectAll(".node")
+                    .data(bubbleNodes)
+                    .enter()
+                    .append("g")
+                    .attr("class", "node")
+                    .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+            node.append("title")
+                    .text(function (d) { return d.name + ": " + d.value + '% ' + d.conference; });
+
+            node.append("circle").attr("r", function (d) {
+                return d.r;
+            }).style("fill", function (d) { return color(d.conference); });
+
+            node.append("text")
+                    .attr("dy", ".3em")
+                    .attr("class", "hoverText")
+                    .style("text-anchor", "middle")
+                    .text(function (d) { return d.name.substring(0, d.r / 3); });
+        });
+    }
+
+    function populateDropDown() {
+        var teamSelect = document.getElementById('team');
+        teamNames.forEach(function (team, index) {
+            var option = document.createElement("option");
+            option.value = team.id;
+            option.innerHTML = team.name;
+            teamSelect.appendChild(option);
+            if (team.id === 3) {
+                teamSelect.selectedIndex = index;
+            }
+        });
+
+    }
+
+    d3.select(self.frameElement).style("height", diameter + "px");
+
+    d3.select("#year").on("change", function () {
+        loadJson();
+    });
+
+    d3.select("#team").on("change", function () {
+        loadJson();
+    });
+
+    window.onload = function () {
+        populateDropDown();
+        loadJson();
+
+    };
+
+
+</script>

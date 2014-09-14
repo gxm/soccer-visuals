@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edge Bundle Graph</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <style type="text/css">
+
+        path.arc {
+        cursor: move;
+        fill: #fff;
+        }
+
+        .node {
+        font-size: 13px;
+        }
+
+        .playHover {
+        fill: #1f77b4;
+        font-weight: bold;
+        }
+
+        .node:hover {
+        fill: #1f77b4;
+        font-weight: bold;
+        }
+
+        .link {
+        fill: none;
+        stroke: #1f77b4;
+        stroke-opacity: .1;
+        pointer-events: none;
+        }
+
+        .link.source, .link.target {
+        stroke-opacity: 1;
+        stroke-width: 2px;
+        }
+
+        .node.goals0 {
+        fill: goldenrod;
+        font-weight: bold;
+        }
+
+        .node.target {
+        fill: OrangeRed;
+        font-weight: bold;
+        }
+
+        .node.source {
+        fill: DodgerBlue;
+        font-weight: bold;
+        }
+
+        .link.source.goals0 {
+        stroke: goldenrod;
+        stroke-width: 2px;
+        stroke-dasharray: 12,5
+        }
+
+        .link.target.goals0 {
+        /*stroke: goldenrod;*/
+        stroke-width: 0px;
+        /*stroke-dasharray: 10,5*/
+        }
+
+        .link.goals1 {
+        stroke-width: 2px;
+        }
+
+        .link.goals2 {
+        stroke-width: 3px;
+        }
+
+        .link.goals3 {
+        stroke-width: 4px;
+        }
+
+        .link.goals4 .link.goals5 .link.goals6 .link.goals7
+        .link.goals8 .link.goals9 .link.goals10
+        .link.goals11 .link.goals12 .link.goals13 {
+        stroke-width: 5px;
+        }
+
+        .link.source {
+        stroke: OrangeRed;
+        stroke-dasharray: 5,3
+        }
+
+        .link.target {
+        stroke: DodgerBlue;
+        }
+
+    </style>
+</head>
+<body>
+<h2>
+    NCAA Women's Soccer<br>
+    <select id="year">
+        <option value="2014" selected>2014</option>
+        <option value="2013">2013</option>
+        <option value="2012">2012</option>
+        <option value="2011">2011</option>
+        <option value="2010">2010</option>
+        <option value="2009">2009</option>
+    </select> Top <select id="count">
+    <option value="25">25</option>
+    <option value="40">40</option>
+    <option value="64">64</option>
+    <option value="100" selected>100</option>
+</select> Teams<br>
+    <button id='play' type="button" class="btn" onclick='play()'>Cycle Through Teams</button>
+    <div class="small">
+        Line weight is proportional to goal difference.<br>
+        Data last updated at <span id="date"></span>
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <text dx="0" dy="10" text-anchor="start" class="node source">Win</text>
+        <line x1="40" y1="7" x2="100" y2="7" class="link target"></line>
+        <text dx="0" dy="25" text-anchor="start" class="node target">Loss</text>
+        <line x1="40" y1="20" x2="100" y2="20" class="link source"></line>
+        <text dx="0" dy="42" text-anchor="start" class="node goals0">Tie</text>
+        <line x1="40" y1="38" x2="100" y2="38" class="link source goals0"></line>
+    </svg>
+</h2>
+
+<script type="text/javascript" src="js-lib/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="js-lib/d3.js"></script>
+<script type="text/javascript" src="js-lib/d3.layout.js"></script>
+<script type="text/javascript" src="js-lib/packages.js"></script>
+<script type="text/javascript">
+
+    var hosts = ['http://74.207.248.81:8081/',
+        'http://localhost:8081/'];
+
+    var host = hosts[0];
+
+    var href = window.location.href;
+    if (href === undefined || href === '' || href.indexOf(hosts[1]) == 0)
+    {
+        host = hosts[1];
+    }
+
+    var w = 1280, h = 700, rx = w / 3, ry = h / 2, m0, rotate = 0, nodes;
+
+    var splines = [];
+
+    var cluster = d3.layout.cluster().size([360, ry - 120]);
+
+    var bundle = d3.layout.bundle();
+
+    var line = d3.svg.line.radial()
+            .interpolate("bundle")
+            .tension(.45)
+            .radius(function (d) {
+                return d.y;
+            }).angle(function (d) {
+                return d.x / 180 * Math.PI;
+            });
+
+    // Chrome 15 bug: <http://code.google.com/p/chromium/issues/detail?id=98951>
+    var div = d3.select("body")
+            .insert("div", "h2")
+            .style("top", "0px")
+            .style("left", "-160px")
+            .style("width", w + "px")
+            .style("height", w + "px")
+            .style("position", "absolute")
+            .style("-webkit-backface-visibility", "hidden");
+
+    var svg = div.append("svg:svg")
+            .attr("width", w)
+            .attr("height", w)
+            .append("svg:g")
+            .attr("transform", "translate(" + rx + "," + ry + ")");
+
+    svg.append("svg:path").attr("class", "arc").attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI)).on("mousedown", mousedown);
+
+    function loadJson() {
+        d3.select("input[type=range]").on("change", function () {
+            line.tension(this.value / 100);
+            path.attr("d", function (d, i) {
+                return line(splines[i]);
+            });
+        });
+
+        d3.select("#year").on("change", function () {
+            loadJson();
+            mouseup();
+        });
+
+        d3.select("#count").on("change", function () {
+            loadJson();
+            mouseup();
+        });
+
+        var year = $("#year").val();
+        var count = $('#count').val();
+        $.getJSON(host + 'bundle/' + year + '/' + count + '?callback=?', function(data){
+            nodes = cluster.nodes(packages.root(data.data));
+            $('#date').text(data.date);
+            var links = packages.imports(nodes);
+            var splines = bundle(links);
+
+            d3.selectAll("path.link").remove();
+            d3.selectAll("g.node").remove();
+
+            var path = svg.selectAll("path.link").data(links).enter().append("svg:path")//todo work with this for ties
+                    .attr("class", function (d) {
+                        return "link source-" + d.source.key + " target-" + d.target.key + " goals" + d.goals;
+                    }).attr("d", function (d, i) {
+                        return line(splines[i]);
+                    });
+
+            svg.selectAll("g.node").data(nodes.filter(function (n) {
+                        return !n.children;
+                    })).enter().append("svg:g").attr("class", "node").attr("id", function (d) {
+                        return "node-" + d.key;
+                    }).attr("transform", function (d) {
+                        return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")";
+                    }).append("svg:text").attr("dx", function (d) {
+                        return d.x < 180 ? 8 : -8;
+                    }).attr("dy", ".31em").attr("text-anchor", function (d) {
+                        return d.x < 180 ? "start" : "end";
+                    }).attr("transform", function (d) {
+                        return d.x < 180 ? null : "rotate(180)";
+                    }).text(function (d) {
+                        return d.rpiId + ' ' + d.name;
+                    }).on("mouseover", mouseover).on("mouseout", mouseout);
+
+
+        });
+
+
+
+    }
+
+    d3.select(window).on("mousemove", mousemove).on("mouseup", mouseup);
+
+    function mouse(e) {
+        return [e.pageX - rx, e.pageY - ry];
+    }
+
+    function mousedown() {
+        m0 = mouse(d3.event);
+        d3.event.preventDefault();
+    }
+
+    function mousemove() {
+        if (m0) {
+            var m1 = mouse(d3.event), dm = Math.atan2(cross(m0, m1), dot(m0, m1)) * 180 / Math.PI;
+            div.style("-webkit-transform", "translateY(" + (ry - rx) + "px)rotateZ(" + dm + "deg)translateY(" + (rx - ry) + "px)");
+        }
+    }
+
+    function mouseup() {
+        if (m0) {
+            var m1 = mouse(d3.event), dm = Math.atan2(cross(m0, m1), dot(m0, m1)) * 180 / Math.PI;
+
+            rotate += dm;
+            if (rotate > 360) rotate -= 360; else if (rotate < 0) rotate += 360;
+            m0 = null;
+
+            div.style("-webkit-transform", null);
+
+            svg.attr("transform", "translate(" + rx + "," + ry + ")rotate(" + rotate + ")").selectAll("g.node text").attr("dx", function (d) {
+                        return (d.x + rotate) % 360 < 180 ? 8 : -8;
+                    }).attr("text-anchor", function (d) {
+                        return (d.x + rotate) % 360 < 180 ? "start" : "end";
+                    }).attr("transform", function (d) {
+                        return (d.x + rotate) % 360 < 180 ? null : "rotate(180)";
+                    });
+        }
+    }
+
+    function mouseover(d) {
+        svg.selectAll("path.link.target-" + d.key).classed("target", true).each(updateNodes("source", true));
+
+        svg.selectAll("path.link.source-" + d.key).classed("source", true).each(updateNodes("target", true));
+    }
+
+    function mouseout(d) {
+        svg.selectAll("path.link.source-" + d.key).classed("source", false).each(updateNodes("target", false));
+
+        svg.selectAll("path.link.target-" + d.key).classed("target", false).each(updateNodes("source", false));
+    }
+
+    function updateNodes(name, value) {
+        return function (d) {
+            if (value) this.parentNode.appendChild(this);
+            //todo look for d.goals = 0
+            if (d.goals === 0) {
+                svg.select("#node-" + d[name].key).classed('goals0', value);
+            } else {
+                svg.select("#node-" + d[name].key).classed(name, value);
+            }
+        };
+    }
+
+    function play() {
+        var nodeTransition = svg.selectAll("g.node").transition();
+        nodes.forEach(function (node, index) {
+            var duration = 1000;
+            var delay = index * duration * 1.5;
+
+            nodeTransition = nodeTransition.duration(duration).delay(delay).each("start", function () {
+                        svg.select("#node-" + node.key).classed('playHover', true);
+                        mouseover(node);
+                    }).each("end", function () {
+                        svg.select("#node-" + node.key).classed('playHover', false);
+                        mouseout(node);
+                    }).transition();
+        });
+    }
+
+    function cross(a, b) {
+        return a[0] * b[1] - a[1] * b[0];
+    }
+
+    function dot(a, b) {
+        return a[0] * b[0] + a[1] * b[1];
+    }
+
+    window.onload = function () {
+
+        loadJson();
+    };
+
+
+</script>
+</body>
+</html>
