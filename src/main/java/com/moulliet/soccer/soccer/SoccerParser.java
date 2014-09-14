@@ -1,4 +1,4 @@
-package com.moulliet.soccer.ncsoccer;
+package com.moulliet.soccer.soccer;
 
 import com.moulliet.common.Config;
 import com.moulliet.soccer.*;
@@ -23,15 +23,15 @@ import java.util.Map;
 /**
  *
  */
-public class NCSoccerParser {
-    private static final Logger logger = LoggerFactory.getLogger(NCSoccerParser.class);
+public class SoccerParser {
+    private static final Logger logger = LoggerFactory.getLogger(SoccerParser.class);
 
     private static String data;
     private static final ObjectMapper mapper = new ObjectMapper();
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.000");
 
     public static void loadData() throws IOException {
-        File dir = new File(Config.getBaseDir() + "/data/ncsoccer/");
+        File dir = new File(Config.getBaseDir() + "/data/soccer/");
         File[] files = dir.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return name.endsWith(".html");
@@ -152,7 +152,7 @@ public class NCSoccerParser {
     }
 
     private static void addDate(ObjectNode objectNode) throws IOException {
-        File updated = new File(Config.getBaseDir() + "/data/ncsoccer/updated");
+        File updated = new File(Config.getBaseDir() + "/data/soccer/updated");
         String date = FileUtils.readFileToString(updated);
         objectNode.put("date", date);
     }

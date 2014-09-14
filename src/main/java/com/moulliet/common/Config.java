@@ -151,7 +151,7 @@ public class Config {
     public static String getBaseDir() {
         String defaultValue = System.getProperty("base.dir");
         if (StringUtils.isBlank(defaultValue)) {
-            return "/Users/greg/Dropbox/Soccer/";
+            return "/Users/greg/code/soccer-visuals/";
         }
         return defaultValue;
     }

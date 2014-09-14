@@ -1,6 +1,6 @@
 package com.moulliet.soccer;
 
-import com.moulliet.soccer.ncsoccer.NCSoccerParser;
+import com.moulliet.soccer.soccer.SoccerParser;
 import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class BubbleResource {
         logger.info("getting for " + year + " " + teamId);
         Team team = Teams.get(teamId);
 
-        JsonNode jsonNodes = NCSoccerParser.bubbleData(year, team);
+        JsonNode jsonNodes = SoccerParser.bubbleData(year, team);
         String entity = "";
         if (callback != null) {
             entity += callback + "(";

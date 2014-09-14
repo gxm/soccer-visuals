@@ -1,7 +1,7 @@
 package com.moulliet.soccer;
 
 import com.moulliet.common.Config;
-import com.moulliet.soccer.ncsoccer.NCSoccerParser;
+import com.moulliet.soccer.soccer.SoccerParser;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import org.eclipse.jetty.server.Server;
@@ -31,7 +31,7 @@ public class SoccerServiceMain {
         ServletContextHandler context = new ServletContextHandler(server, "/");
         context.addServlet(servletHolder, "/*");
         Config.getInstance().set("stat.iterations", 500);
-        NCSoccerParser.loadData();
+        SoccerParser.loadData();
         Teams.calculateRpis();
         server.start();
         logger.info("started Soccer Service on port " + port);

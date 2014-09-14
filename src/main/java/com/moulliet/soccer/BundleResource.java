@@ -1,6 +1,6 @@
 package com.moulliet.soccer;
 
-import com.moulliet.soccer.ncsoccer.NCSoccerParser;
+import com.moulliet.soccer.soccer.SoccerParser;
 import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class BundleResource {
                            @QueryParam("callback") final String callback)
             throws IOException {
         logger.info("getting for " + year + " " + teams);
-        JsonNode jsonNodes = NCSoccerParser.bundleData(year, teams);
+        JsonNode jsonNodes = SoccerParser.bundleData(year, teams);
         String entity = "";
         if (callback != null) {
             entity += callback + "(";

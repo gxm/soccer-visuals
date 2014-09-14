@@ -1,4 +1,4 @@
-package com.moulliet.soccer.ncsoccer;
+package com.moulliet.soccer.soccer;
 
 import com.moulliet.soccer.Game;
 import com.moulliet.soccer.Team;

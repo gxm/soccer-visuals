@@ -1,6 +1,6 @@
 package com.moulliet.soccer;
 
-import com.moulliet.soccer.ncsoccer.NCSoccerParser;
+import com.moulliet.soccer.soccer.SoccerParser;
 import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class RpiResource {
                            @PathParam("teamCount") int teamCount,
                            @QueryParam("callback") final String callback) throws IOException {
         logger.info("loading for " + teamCount);
-        JsonNode jsonNodes = NCSoccerParser.rpis(year, teamCount);
+        JsonNode jsonNodes = SoccerParser.rpis(year, teamCount);
         String entity = "";
         if (callback != null) {
             entity += callback + "(";
