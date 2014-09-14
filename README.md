@@ -7,11 +7,11 @@ Currently, this project only works with the NCAA women's soccer data from [All W
 
 It is hosted at [soccer.moulliet.com](http://soccer.moulliet.com/)
 
-The system downloads all of the data files at midnight Pacific time and then restarts.
+The system downloads all of the data files at midnight Pacific time and then restarts the service.
 This is run via cron:
 
 ``` 
-@daily /home/moulliet/soccer/scripts/soccer.sh download
+@daily ~/soccer-visuals/soccer.sh download
 ```
 
 Deployment is done via the deploy.sh script.
