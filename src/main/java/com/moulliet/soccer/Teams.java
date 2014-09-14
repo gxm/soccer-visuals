@@ -23,21 +23,6 @@ public class Teams {
         for (int year = 2009; year <= Dates.CURRENT_YEAR; year++) {
             calculateRpi(year);
         }
-
-        forecastRpi();
-
-    }
-
-    private static void forecastRpi() {
-        logger.info("starting forecast");
-        //todo is this still useful?
-        int year = Dates.CURRENT_YEAR;
-        List<Team> teamsByRpi = getTeamsByRpi(year);
-        for (int i = 0; i < teamsByRpi.size(); i++) {
-            Team team = teamsByRpi.get(i);
-            team.getSeason(year).setRpiRank(i + 1);
-        }
-        logger.info("completed forecast");
     }
 
     public static void calculateRpi(int year) {
@@ -66,10 +51,6 @@ public class Teams {
         });
 
         Collections.reverse(list);
-        for (int i = 0; i < list.size(); i++) {
-            Team team = list.get(i);
-            seasonStrategy.getSeason(team, year).setRpiRank(i + 1);
-        }
         return list;
     }
 

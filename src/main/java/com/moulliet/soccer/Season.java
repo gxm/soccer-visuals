@@ -4,12 +4,10 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class Season {
     private static final Logger logger = LoggerFactory.getLogger(Season.class);
-    private final DecimalFormat df = new DecimalFormat("#.###");
     private int year;
     private Team team;
     private Map<LocalDate, Game> games = new TreeMap<LocalDate, Game>();
@@ -17,10 +15,7 @@ public class Season {
     private Map<Integer, Bubble> bubbles;
     private Calc level1;
     private Map<Team, Calc> level2 = new HashMap<Team, Calc>();
-    private int rpiRank;
     private SeasonStrategy seasonStrategy = new DefaultSeasonStrategy();
-
-    private Season statSeason;
 
     private Map<LocalDate, Float> dateRpiMap = new TreeMap<LocalDate, Float>();
 
@@ -41,16 +36,8 @@ public class Season {
         return games.values();
     }
 
-    public Game getGame(LocalDate date) {
-        return games.get(date);
-    }
-
     public float getRpi() {
         return rpi;
-    }
-
-    public void setRpi(float rpi) {
-        this.rpi = rpi;
     }
 
     public void calculateRpi() {
@@ -201,14 +188,6 @@ public class Season {
 
     public List<Bubble> getBubbles() {
         return new ArrayList<Bubble>(bubbles.values());
-    }
-
-    public int getRpiRank() {
-        return rpiRank;
-    }
-
-    public void setRpiRank(int rpiRank) {
-        this.rpiRank = rpiRank;
     }
 
     public static class Calc {
