@@ -87,16 +87,6 @@ public class NCSoccerParser {
         return rootNode;
     }
 
-    public static JsonNode forecast(int teamCount) throws IOException {
-        ObjectNode rootNode = mapper.createObjectNode();
-        addDate(rootNode);
-        int year = Dates.CURRENT_YEAR;
-        handle(teamCount, year, new DefaultSeasonStrategy(), rootNode.putArray("current"));
-        handle(teamCount, year, new ForecastSeasonStrategy(), rootNode.putArray("forecast"));
-        handle(teamCount, year, new StatisticalSeasonStrategy(), rootNode.putArray("statistical"));
-        return rootNode;
-    }
-
     public static JsonNode rpis(int year, int teamCount) throws IOException {
         ObjectNode rootNode = mapper.createObjectNode();
         addDate(rootNode);

@@ -48,25 +48,14 @@ public class Teams {
 
     private static void forecastRpi() {
         logger.info("starting forecast");
+        //todo is this still useful?
         int year = Dates.CURRENT_YEAR;
         List<Team> teamsByRpi = getTeamsByRpi(year);
         for (int i = 0; i < teamsByRpi.size(); i++) {
             Team team = teamsByRpi.get(i);
             team.getSeason(year).setRpiRank(i + 1);
         }
-        for (Team team : teamsByRpi) {
-            team.forecastCopy(year);
-        }
-        for (Team team : teamsByRpi) {
-            team.forecastRpi(year);
-        }
         logger.info("completed forecast");
-    }
-
-    public static void clearSeason(int year) {
-        for (Team team : teamsById.values()) {
-            team.clearSeason(year);
-        }
     }
 
     public static void calculateRpi(int year) {
@@ -101,21 +90,5 @@ public class Teams {
         }
         return list;
     }
-
-    public static List<Team> getTeamsByName() {
-        ArrayList<Team> list = new ArrayList<Team>(teamsById.values());
-        Collections.sort(list, new Comparator<Team>() {
-            /**
-             * Compares its two arguments for order.
-             * Returns a negative integer, zero, or a positive integer as the
-             * first argument is less than, equal to, or greater than the second.
-             */
-            public int compare(Team team1, Team team2) {
-                return (team1.getName().compareTo(team2.getName()));
-            }
-        });
-        return list;
-    }
-
 
 }

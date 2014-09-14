@@ -93,16 +93,8 @@ public class Team {
 
     }
 
-    public void forecastCopy(int year) {
-        getSeason(year).forecastCopy();
-    }
-
     public Season statisticalCopy(int year) {
         return getSeason(year).statisticalCopy();
-    }
-
-    public void forecastRpi(int year) {
-        getSeason(year).getForecastSeason().calculateRpi();
     }
 
     public void statisticalRpi(int year) {
@@ -120,7 +112,4 @@ public class Team {
         return Season.average(statRpis);
     }
 
-    public List<Float> getStatRpis() {
-        return statRpis;
-    }
 }

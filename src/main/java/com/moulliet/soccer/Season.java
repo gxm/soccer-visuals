@@ -20,7 +20,6 @@ public class Season {
     private int rpiRank;
     private SeasonStrategy seasonStrategy = new DefaultSeasonStrategy();
 
-    private Season forecastSeason;
     private Season statSeason;
 
     private Map<LocalDate, Float> dateRpiMap = new TreeMap<LocalDate, Float>();
@@ -32,32 +31,6 @@ public class Season {
 
     public Map<LocalDate, Float> getDateRpiMap() {
         return dateRpiMap;
-    }
-
-    public void forecastCopy() {
-        forecastSeason = new Season(year, team);
-        forecastSeason.seasonStrategy = new ForecastSeasonStrategy();
-        for (Game game : games.values()) {
-            if (!game.isPlayed()) {
-                int awayTeamId = game.getAwayTeamId();
-                int homeTeamId = game.getHomeTeamId();
-                int awayRank = Teams.get(awayTeamId).getSeason(year).getRpiRank();
-                int homeRank = Teams.get(homeTeamId).getSeason(year).getRpiRank();
-                Game fGame;
-                if (homeRank > awayRank) {
-                    fGame = new Game(game.getDate(), homeTeamId, awayTeamId, 0, 1, game.isNeutral());
-                } else {
-                    fGame = new Game(game.getDate(), homeTeamId, awayTeamId, 1, 0, game.isNeutral());
-                }
-                forecastSeason.addGame(fGame);
-            } else {
-                forecastSeason.addGame(game);
-            }
-        }
-    }
-
-    public Season getForecastSeason() {
-        return forecastSeason;
     }
 
     public Season statisticalCopy() {
