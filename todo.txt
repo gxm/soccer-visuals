@@ -10,15 +10,12 @@ Rpi Bubble
     when hovering, could show which teams are linked
     could include rpi rank of teams
 
-Parallel Coords
-    Remove Prediction
-
 Game Links
     figure out way to show links between all teams as node ball (molecule)
 
 modify download to work with json links
-    http://www.nc-soccer.com/wsoccer/2013/data/2013-getAllRecords.json
-    http://nc-soccer.com/wsoccer/2013/json_teams.php
+    http://woso-stats.tk/college/2014/data/2014-getAllRecords.json
+    http://woso-stats.tk/college/2014/json_teams.php
     what's going on with this calc?
         json data is not complete
 
